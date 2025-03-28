@@ -1,2 +1,2 @@
 # ai_playground
-coding ideas for open source re-use
+my coding ideas for open source re-use (feel free to use anything that fits for you)
