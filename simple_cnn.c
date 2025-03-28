@@ -30,6 +30,40 @@ double calculate_loss(double output, double target) {
     return 0.5 * pow(output - target, 2);
 }
 
+void print_learned_results(double inputs[][2], double targets[], double *hidden_weights, double *hidden_biases, double *output_weights, double *output_biases, int num_inputs, int num_hidden, int num_output) {
+    printf("Trained Results:\n");
+    for (int i = 0; i < 4; i++) {
+        double *hidden_layer_input = (double *)malloc(num_hidden * sizeof(double));
+        double *hidden_layer_output = (double *)malloc(num_hidden * sizeof(double));
+        double *output_layer_input = (double *)malloc(num_output * sizeof(double));
+        double *output_layer_output = (double *)malloc(num_output * sizeof(double));
+
+        for (int j = 0; j < num_hidden; j++) {
+            hidden_layer_input[j] = 0;
+            for (int k = 0; k < num_inputs; k++) {
+                hidden_layer_input[j] += inputs[i][k] * hidden_weights[k * num_hidden + j];
+            }
+            hidden_layer_input[j] += hidden_biases[j];
+            hidden_layer_output[j] = sigmoid(hidden_layer_input[j]);
+        }
+
+        for (int j = 0; j < num_output; j++) {
+            output_layer_input[j] = 0;
+            for (int k = 0; k < num_hidden; k++) {
+                output_layer_input[j] += hidden_layer_output[k] * output_weights[k * num_output + j];
+            }
+            output_layer_input[j] += output_biases[j];
+            output_layer_output[j] = sigmoid(output_layer_input[j]);
+        }
+        printf("Input: %d %d, Output: %f, Target: %d\n", (int)inputs[i][0], (int)inputs[i][1], output_layer_output[0], (int)targets[i]);
+
+        free(hidden_layer_input);
+        free(hidden_layer_output);
+        free(output_layer_input);
+        free(output_layer_output);
+    }
+}
+
 int main() {
     /* XOR dataset */
     double inputs[][2] = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
@@ -134,10 +168,8 @@ int main() {
     }
 
     /* Print the learned results */
-    printf("Trained Results:\n");
-    for (int i = 0; i < 4; i++) {
-        // ... (rest of the print code remains the same)
-    }
+    print_learned_results(inputs, targets, hidden_weights, hidden_biases, output_weights, output_biases, num_inputs, num_hidden, num_output);
+
 
     /* Free allocated memory */
     free(hidden_weights);
